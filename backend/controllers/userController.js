@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel.js')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -60,6 +61,64 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 })
 
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body
+  if (!email || !password) {
+    res.status(400)
+    throw new Error('Please fill out all required fields')
+  }
+  const user = await User.findOne({ email })
+  if (!user) {
+    res.status(400)
+    throw new Error('User not found, please register')
+  }
+
+  const passwordIsValid = await bcrypt.compare(password, user.password)
+
+  const token = generateToken(user._id)
+
+  // send http-only cookie
+  res.cookie('token', token, {
+    path: '/',
+    httpOnly: true,
+    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    secure: true,
+    sameSite: 'none',
+  })
+
+  if (user && passwordIsValid) {
+    const { _id, name, email, photo, phone, bio } = user
+    res.status(200).json({
+      _id,
+      name,
+      email,
+      photo,
+      phone,
+      bio,
+      token,
+    })
+  } else {
+    res.status(400)
+    throw new Error('Invalid email or password')
+  }
+})
+
+const logout = asyncHandler(async (req, res) => {
+  res.cookie('token', '', {
+    path: '/',
+    httpOnly: true,
+    expires: new Date(0),
+    secure: true,
+    sameSite: 'none',
+  })
+
+  return res.status(200).json({
+    message: 'Logged out',
+  })
+})
+
 module.exports = {
   registerUser,
+  loginUser,
+  logout,
 }
