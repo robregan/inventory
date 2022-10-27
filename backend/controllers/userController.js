@@ -1,5 +1,12 @@
 const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel.js')
+const jwt = require('jsonwebtoken')
+
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: '30d',
+  })
+}
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body
@@ -25,6 +32,17 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
   })
 
+  const token = generateToken(user._id)
+
+  // send http-only cookie
+  res.cookie('token', token, {
+    path: '/',
+    httpOnly: true,
+    expiresIn: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    secure: true,
+    sameSite: 'none',
+  })
+
   if (user) {
     const { _id, name, email, photo, phone, bio } = user
     res.status(201).json({
@@ -34,6 +52,7 @@ const registerUser = asyncHandler(async (req, res) => {
       photo,
       phone,
       bio,
+      token,
     })
   } else {
     res.status(400)
