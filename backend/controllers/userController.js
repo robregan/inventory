@@ -152,10 +152,73 @@ const loginStatus = asyncHandler(async (req, res) => {
   return res.json(false)
 })
 
+// update user profile
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id)
+
+  if (user) {
+    const { name, email, photo, phone, bio } = user
+    user.name = req.body.name || name
+    user.email = email
+    user.phone = req.body.phone || phone
+    user.photo = req.body.photo || photo
+    user.bio = req.body.bio || bio
+
+    // if (req.body.password) {
+    // user.password = req.body.password
+    // }
+
+    const updatedUser = await user.save()
+
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      bio: updatedUser.bio,
+    })
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
+const changePassword = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id)
+
+  const { oldPassword, password } = req.body
+
+  if (!user) {
+    res.status(404)
+    throw new Error('User not found, please sign up ')
+  }
+
+  if (!oldPassword || !password) {
+    res.status(400)
+    throw new Error('Please fill out all required fields')
+  }
+
+  // check if pass matches w db
+  const passwordIsValid = await bcrypt.compare(oldPassword, user.password)
+
+  if (user && passwordIsValid) {
+    user.password = password
+    await user.save()
+    res.status(200).send({
+      message: 'Password updated',
+    })
+  } else {
+    res.status(400)
+    throw new Error('Invalid password')
+  }
+})
+
 module.exports = {
   registerUser,
   loginUser,
   logout,
   getUser,
   loginStatus,
+  updateUser,
+  changePassword,
 }
