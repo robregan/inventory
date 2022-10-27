@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 const userRoute = require('./routes/userRoute.js')
 const errorHandler = require('./middleware/errorMiddleware.js')
 const cookieParser = require('cookie-parser')
+const productRoute = require('./routes/productRoute.js')
 
 app.use(express.json())
 app.use(cookieParser())
@@ -15,6 +16,7 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }))
 app.use('/api/users', userRoute) // route middleware
+app.use('/api/products', productRoute) // route middleware
 
 app.get('/', (req, res) => {
   res.send('homepage')
