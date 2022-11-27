@@ -7,7 +7,7 @@ const Reset = () => {
   return (
     <div className={`container ${styles.auth}`}>
       <Card>
-        <div className={`styles.form`}>
+        <div className={styles.form}>
           <div className='--flex-center'>
             <MdPassword size={35} color='#999' />
           </div>

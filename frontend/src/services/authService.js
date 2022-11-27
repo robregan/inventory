@@ -28,3 +28,54 @@ export const registerUser = async (userData) => {
     toast.error(message)
   }
 }
+
+// login user
+export const loginUser = async (userData) => {
+  try {
+    const response = await axios.post(
+      `${BACKEND_URL}/api/users/login`,
+      userData
+    )
+    if (response.statusText === 'OK') {
+      toast.success('Login successful, ver nice')
+    }
+    return response.data
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString()
+    toast.error(message)
+  }
+}
+
+// logout user
+export const logoutUser = async () => {
+  try {
+    await axios.get(`${BACKEND_URL}/api/users/logout`)
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString()
+    toast.error(message)
+  }
+}
+
+// forgot pass
+export const forgotPassword = async (userData) => {
+  try {
+    const response = await axios.post(
+      `${BACKEND_URL}/api/users/forgotpassword`,
+      userData
+    )
+
+    toast.success(response.data.message)
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString()
+    toast.error(message)
+  }
+}
