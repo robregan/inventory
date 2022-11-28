@@ -3,6 +3,7 @@ import { RiProductHuntLine } from 'react-icons/ri'
 import { Link } from 'react-router-dom'
 import './Home.scss'
 import heroImg from '../../assets/inv-img.png'
+import { ShowOnLogin, ShowOnLogout } from '../../components/protect/HiddenLink'
 
 const Home = () => {
   return (
@@ -13,19 +14,25 @@ const Home = () => {
         </div>
 
         <ul className='home-links'>
-          <li>
-            <Link to='/register'>Register</Link>
-          </li>
-          <li>
-            <button className='--btn --btn-primary'>
-              <Link to='/login'>Login</Link>
-            </button>
-          </li>
-          <li>
-            <button className='--btn --btn-primary'>
-              <Link to='/dashboard'>Dashboard</Link>
-            </button>
-          </li>
+          <ShowOnLogout>
+            <li>
+              <Link to='/register'>Register</Link>
+            </li>
+          </ShowOnLogout>
+          <ShowOnLogout>
+            <li>
+              <button className='--btn --btn-primary'>
+                <Link to='/login'>Login</Link>
+              </button>
+            </li>
+          </ShowOnLogout>
+          <ShowOnLogin>
+            <li>
+              <button className='--btn --btn-primary'>
+                <Link to='/dashboard'>Dashboard</Link>
+              </button>
+            </li>
+          </ShowOnLogin>
         </ul>
       </nav>
 
@@ -44,12 +51,9 @@ const Home = () => {
             </button>
           </div>
           <div className='--flex-start'>
-            {/* <h4>14k Brand Owners</h4>
-            <h4>1.5k Stores</h4>
-            <h4>23k Active Users</h4> */}
-            {/* <NumberText num='14k' text='Brand Owners' />
+            <NumberText num='14k' text='Brand Owners' />
             <NumberText num='23k' text='Active Users' />
-            <NumberText num='500+' text='Partners' /> */}
+            <NumberText num='500+' text='Partners' />
           </div>
         </div>
         <div className='hero-image'>
@@ -60,7 +64,7 @@ const Home = () => {
   )
 }
 
-const numberText = ({ num, text }) => {
+const NumberText = ({ num, text }) => {
   return (
     <div className='--mr'>
       <h3 className='--color-white'>{num}</h3>
