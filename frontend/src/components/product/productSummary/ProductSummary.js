@@ -1,17 +1,42 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { AiFillDollarCircle } from 'react-icons/ai'
 import { BiCategory } from 'react-icons/bi'
 import './ProductSummary.scss'
 import { BsCart4, BsCartX } from 'react-icons/bs'
 import InfoBox from '../../infoBox/InfoBox'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  CALC_CATEGORY,
+  CALC_OUTOFSTOCK,
+  CALC_STORE_VALUE,
+  selectCategory,
+  selectOutOfStock,
+  selectTotalStoreValue,
+} from '../../../redux/features/product/productSlice'
 
 // icons
-const earningIcon = <AiFillDollarCircle size={40} color='#fff' />
-const categoryIcon = <BiCategory size={40} color='#fff' />
-const productIcon = <BsCart4 size={40} color='#fff' />
-const outOfStockIcon = <BsCartX size={40} color='#fff' />
+const earningIcon = <AiFillDollarCircle size={35} color='#fff' />
+const categoryIcon = <BiCategory size={35} color='#fff' />
+const productIcon = <BsCart4 size={35} color='#fff' />
+const outOfStockIcon = <BsCartX size={35} color='#fff' />
+
+// Format Amount
+export const formatNumbers = (x) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
 
 const ProductSummary = ({ products }) => {
+  const dispatch = useDispatch()
+  const totalStoreValue = useSelector(selectTotalStoreValue)
+  const outOfStock = useSelector(selectOutOfStock)
+  const category = useSelector(selectCategory)
+
+  useEffect(() => {
+    dispatch(CALC_STORE_VALUE(products))
+    dispatch(CALC_OUTOFSTOCK(products))
+    dispatch(CALC_CATEGORY(products))
+  }, [dispatch, products])
+
   return (
     <div className='product-summary'>
       <h3 className='--mt'>Inventory Stats</h3>
@@ -25,19 +50,19 @@ const ProductSummary = ({ products }) => {
         <InfoBox
           icon={earningIcon}
           title={'Total Store Value'}
-          count={'0'}
+          count={'$' + formatNumbers(totalStoreValue.toFixed(2))}
           bgColor='card2'
         />
         <InfoBox
           icon={outOfStockIcon}
           title={'Out of Stock'}
-          count={'0'}
+          count={outOfStock}
           bgColor='card3'
         />
         <InfoBox
           icon={categoryIcon}
           title={'All Categories'}
-          count={'0'}
+          count={category.length}
           bgColor='card4'
         />
       </div>
