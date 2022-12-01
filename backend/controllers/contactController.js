@@ -22,7 +22,7 @@ const contactUs = asyncHandler(async (req, res) => {
     await sendEmail(subject, message, sendTo, sentFrom, replyTo)
     res.status(200).json({
       success: true,
-      message: 'Password reset email sent',
+      message: 'Email sent',
     })
   } catch (error) {
     res.status(500)
