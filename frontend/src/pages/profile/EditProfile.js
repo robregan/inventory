@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Card from '../../components/card/Card'
+import ChangePassword from '../../components/changePassword/ChangePassword'
 import Loader from '../../components/loader/Loader'
 import { selectUser } from '../../redux/features/auth/authSlice'
 import { updateUser } from '../../services/authService'
@@ -145,6 +146,8 @@ const EditProfile = () => {
           </span>
         </form>
       </Card>
+      <br />
+      <ChangePassword />
     </div>
   )
 }
