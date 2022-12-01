@@ -16,6 +16,7 @@ import {
   deleteProduct,
   getProducts,
 } from '../../../redux/features/product/productSlice'
+import { Link } from 'react-router-dom'
 
 const ProductList = ({ products, isLoading }) => {
   const filteredProducts = useSelector(selectFilteredProducts)
@@ -128,7 +129,9 @@ const ProductList = ({ products, isLoading }) => {
                       <td>${price * quantity}</td>
                       <td className='icons'>
                         <span>
-                          <AiOutlineEye size={25} color={'purple'} />
+                          <Link to={`/product-details/${_id}`}>
+                            <AiOutlineEye size={25} color={'purple'} />
+                          </Link>
                         </span>
                         <span>
                           <FaEdit size={20} color={'green'} />
